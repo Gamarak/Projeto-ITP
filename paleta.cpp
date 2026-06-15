@@ -27,13 +27,13 @@ Paleta::Paleta(){}
 Paleta::Paleta(string nomeArquivo) {
   ifstream arquivo(nomeArquivo);
   if (!arquivo.is_open()){
-    cout << "Erro" << endl;
+    cout << "Erro ao abrir o arquivo" << endl;
     return;
   }
   string linha;
 
   while (getline(arquivo, linha)) {
-    if (!linha.empty() && linha[0] == '#') {
+    if (!linha.empty() && linha[0] == '#' && linha.size() >= 7) {
     int r = HexInt(linha.substr(1, 2));
     int g = HexInt(linha.substr(3, 2));
     int b = HexInt(linha.substr(5, 2));
