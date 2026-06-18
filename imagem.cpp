@@ -32,12 +32,12 @@ int Imagem::obterAltura() const {
   return altura;
 }
 
-Pixel& Imagem::operator()(int coluna, int linha) {
-  int indice = linha * largura + coluna;
+Pixel& Imagem::operator()(int x, int y) {
+  int indice = y * largura + x;
   return pixels[indice];
 }
-const Pixel& Imagem::operator()(int coluna, int linha) const {
-  int indice = linha * largura + coluna;
+const Pixel& Imagem::operator()(int x, int y) const {
+  int indice = y * largura + x;
   return pixels[indice];
 }
 
@@ -50,11 +50,11 @@ bool Imagem::salvarPPM(string nomeArquivo) {
   arquivo << largura << " " << altura << endl;
   arquivo << "255" << endl;
 
-  for (int l = 0; l < altura; l++) {
-    for (int c = 0; c < largura; c++){
-      int indice = l * largura + c;
-      arquivo << pixels[indice].r << " " << pixels[indice].g << " " << pixels[indice].b;
-      if (l == altura - 1 && c == largura - 1) {
+  for (int y = 0; y < altura; y++) {
+    for (int x = 0; x < largura; x++){
+      const Pixel& pixel = (*this)(x, y);
+      arquivo << pixel.r << " " << pixel.g << " " << pixel.b;
+      if (y == altura - 1 && x == largura - 1) {
       } else {
         arquivo << endl;
       }
@@ -70,31 +70,38 @@ bool Imagem::lerPPM(string nomeArquivo) {
     return false;
   }
   string tipo;
-  int nLargura, nAltura, mCor;
-
-  arquivo >> tipo;
-  if (tipo != "P3") {
+  if (!(arquivo >> tipo) || tipo != "P3") {
     arquivo.close();
     return false;
   }
 
-  arquivo >> nLargura >> nAltura;
-  arquivo >> mCor;
-  if (nLargura != largura || nAltura != altura) {
+  int novaLargura, novaAltura, nCor;
+  if (!(arquivo >> novaLargura >> novaAltura >> nCor)) {
+    arquivo.close();
+    return false;
+  }
+
+  if (novaLargura != largura || novaAltura != altura) {
     if (pixels != nullptr) {
       delete[] pixels;
     }
-    largura = nLargura;
-    altura = nAltura;
-    pixels = new Pixel[largura * altura];
+    largura = novaLargura;
+    altura = novaAltura;
+    if (largura > 0 && altura > 0) {
+      pixels = new Pixel[largura * altura];
+    } else {
+      pixels = nullptr;
+    }
   }
 
-  for (int l = 0; l < altura; l++) {
-    for (int c = 0; c < largura; c++) {
+  for (int y = 0; y < altura; y++) {
+    for (int x = 0; x < largura; x++) {
       int r, g, b;
       if (arquivo >> r >> g >> b) {
-        int indice = l * largura + c;
-        pixels[indice] = Pixel(r, g, b);
+        (*this)(x, y) = Pixel(r, g, b);
+      } else {
+        arquivo.close();
+        return false;
       }
     }
   }

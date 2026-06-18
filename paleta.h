@@ -7,7 +7,7 @@ using namespace std;
 
 struct Cor {
   int r, g, b;
-  
+
   Cor() : r(0), g(0), b(0){}
 
   Cor(int vermelho, int verde, int azul){
