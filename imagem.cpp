@@ -75,8 +75,8 @@ bool Imagem::lerPPM(string nomeArquivo) {
     return false;
   }
 
-  int novaLargura, novaAltura, nCor;
-  if (!(arquivo >> novaLargura >> novaAltura >> nCor)) {
+  int novaLargura, novaAltura, cor;
+  if (!(arquivo >> novaLargura >> novaAltura >> cor)) {
     arquivo.close();
     return false;
   }
