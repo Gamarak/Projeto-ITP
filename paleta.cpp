@@ -3,7 +3,7 @@
 #include <fstream>
 using namespace std;
 
-int HexInt(const string& hexString) {
+int Paleta::hexParaRgb(const string& hexString) {
   int resultado = 0;
   for (char c : hexString) {
     int valorCaractere = 0;
@@ -31,9 +31,9 @@ Paleta::Paleta(string nomeArquivo) {
 
   while (getline(arquivo, linha)) {
     if (!linha.empty() && linha[0] == '#' && linha.size() >= 7) {
-    int r = HexInt(linha.substr(1, 2));
-    int g = HexInt(linha.substr(3, 2));
-    int b = HexInt(linha.substr(5, 2));
+    int r = hexParaRgb(linha.substr(1, 2));
+    int g = hexParaRgb(linha.substr(3, 2));
+    int b = hexParaRgb(linha.substr(5, 2));
     Cor novaCor(r, g, b);
     cores.push_back(novaCor);
     }

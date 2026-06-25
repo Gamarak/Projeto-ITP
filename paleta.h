@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-using namespace std;
 
 struct Cor {
   int r, g, b;
@@ -19,11 +18,12 @@ struct Cor {
 
 class Paleta {
   private:
-    vector<Cor> cores;
+    std::vector<Cor> cores;
+    int hexParaRgb(const std::string& hexString);
 
   public:
     Paleta();
-    Paleta(string nomeArquivo);
+    Paleta(std::string nomeArquivo);
     void adicionarCor(Cor c);
     int obterTamanho();
     Cor obterCor(int indice);
