@@ -119,7 +119,7 @@ bool Terreno::salvarMapaAltitudes(const std::string& nomeArquivo) {
     if (!arquivo.is_open()) {
         return false;
     }
-    arquivo << linhasY << " " << colunasX;
+    arquivo << linhasY << " " << colunasX << std::endl;
     for (int l = 0; l < linhasY; ++l) {
         for (int c = 0; c < colunasX; ++c) {
             arquivo << mapaAltitudes[l][c];

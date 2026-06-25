@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 
-
 class Terreno {
   private:
     std::vector<std::vector<double>> mapaAltitudes;
