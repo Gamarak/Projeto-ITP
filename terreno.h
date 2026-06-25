@@ -2,6 +2,9 @@
 #define terreno_h 
 #include <vector>
 #include <string>
+#include <algorithm>
+#include <cstdlib>
+
 
 class Terreno {
   private:
@@ -20,10 +23,8 @@ class Terreno {
     const std::vector<std::vector<double>>& obterAltitudes();
     int obterLinhasY();
     int obterColunasX();
-    void salvarMapaAltitudes(const std::string& nomeArquivo);
+    bool salvarMapaAltitudes(const std::string& nomeArquivo);
     bool lerMapaAltitudes(const std::string& nomeArquivo);
-    bool definirAltitudes(const std::vector<std::vector<double>>& altitudes);
-  
 };
 
 #endif //terreno_h

@@ -1,6 +1,8 @@
 #include "terreno.h"
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+#include <cstdlib>
 #include <cmath>
 
 Terreno::Terreno() {
@@ -81,8 +83,8 @@ void Terreno::etapaDiamond(int x, int y, int tamanho, double deslocamento) {
 
 void Terreno::etapaSquare(int x, int y, int tamanho, double deslocamento) {
   int metade = tamanho/2;
-  for (int y = 0; y < linhasY; y += metade) {
-        for (int x = (y + metade) % tamanho; x < colunasX; x += tamanho) {
+  for (y = 0; y < linhasY; y += metade) {
+        for (x = (y + metade) % tamanho; x < colunasX; x += tamanho) {
             double soma = 0.0;
             int cont = 0;
 
@@ -109,4 +111,49 @@ void Terreno::etapaSquare(int x, int y, int tamanho, double deslocamento) {
             mapaAltitudes[y][x] = std::max(0.0, std::min(100.0, mapaAltitudes[y][x]));
         }
     }
+}
+
+bool Terreno::salvarMapaAltitudes(const std::string& nomeArquivo) {
+    std::ofstream arquivo(nomeArquivo);
+    if (!arquivo.is_open()) {
+        return false;
+    }
+
+    arquivo << linhasY << " " << colunasX << "\n";
+    for (int l = 0; l < linhasY; ++l) {
+        for (int c = 0; c < colunasX; ++c) {
+            arquivo << mapaAltitudes[l][c] << " ";
+            if (c < colunasX - 1) {
+                arquivo << " ";
+            }
+        }
+        arquivo << std::endl;
+    }
+    arquivo.close();
+    return true;
+}
+
+bool Terreno::lerMapaAltitudes(const std::string& nomeArquivo) {
+    std::ifstream arquivo(nomeArquivo);
+    if (!arquivo.is_open()) {
+        return false;
+    }
+    int novasLinhasY, novasColunasX;
+    if (!(arquivo >> novasLinhasY >> novasColunasX)) {
+        arquivo.close();
+        return false;
+    }
+    colunasX = novasColunasX;
+    linhasY = novasLinhasY;
+    mapaAltitudes.assign(linhasY, std::vector<double>(colunasX, 0.0));
+    for (int l = 0; l < linhasY; l++) {
+        for (int c = 0; c < colunasX; c++) {
+            if (!(arquivo >> mapaAltitudes[l][c])) {
+                arquivo.close();
+                return false;
+            }
+        }
+    }
+    arquivo.close();
+    return true;
 }
