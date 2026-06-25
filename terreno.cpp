@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cmath>
+#include <ctime>
 
 Terreno::Terreno() {
     linhasY = 0;
@@ -44,33 +45,33 @@ void Terreno::gerarMapaAltitudes(int n, double rugosidade) {
     colunasX = tamanho;
     mapaAltitudes.assign(tamanho, std::vector<double>(tamanho, 0.0));
 
-    mapaAltitudes[0][0] = 50.0;
-    mapaAltitudes[0][tamanho - 1] = 50.0;
-    mapaAltitudes[tamanho - 1][0] = 50.0;
-    mapaAltitudes[tamanho - 1][tamanho - 1] = 50.0;
+    mapaAltitudes[0][0] = (rand() % 1001) / 10.0;
+    mapaAltitudes[0][tamanho - 1] = (rand() % 1001) / 10.0;
+    mapaAltitudes[tamanho - 1][0] = (rand() % 1001) / 10.0;
+    mapaAltitudes[tamanho - 1][tamanho - 1] = (rand() % 1001) / 10.0;
 
     int passo = tamanho - 1;
     double deslocamento = 50.0;
 
     while (passo > 1) {
-      etapaDiamond(0, 0, passo, deslocamento);
-      etapaSquare(0, 0, passo, deslocamento);
+      etapaDiamond(passo, deslocamento);
+      etapaSquare(passo, deslocamento);
       
       passo /= 2;
       deslocamento *= rugosidade;
     }
 }
 
-void Terreno::etapaDiamond(int x, int y, int tamanho, double deslocamento) {
-   for (int l = y; l < linhasY - 1; l += tamanho) {
-        for (int c = x; c < colunasX - 1; c += tamanho) {
-            int meioX = c + tamanho / 2;
-            int meioY = l + tamanho / 2;
+void Terreno::etapaDiamond(int tamanho, double deslocamento) {
+   for (int y = 0; y < linhasY - 1; y += tamanho) {
+        for (int x = 0; x < colunasX - 1; x += tamanho) {
+            int meioX = x + tamanho / 2;
+            int meioY = y + tamanho / 2;
 
-            double supEsq = mapaAltitudes[l][c];
-            double supDir = mapaAltitudes[l][c + tamanho];
-            double infEsq = mapaAltitudes[l + tamanho][c];
-            double infDir = mapaAltitudes[l + tamanho][c + tamanho];
+            double supEsq = mapaAltitudes[y][x];
+            double supDir = mapaAltitudes[y][x + tamanho];
+            double infEsq = mapaAltitudes[y + tamanho][x];
+            double infDir = mapaAltitudes[y + tamanho][x + tamanho];
             double media = (supEsq + supDir + infEsq + infDir) / 4.0;
 
             double aleatorio = ((rand() % 1000) / 1000.0) * deslocamento * 2 - deslocamento;
@@ -81,10 +82,10 @@ void Terreno::etapaDiamond(int x, int y, int tamanho, double deslocamento) {
     }
 }
 
-void Terreno::etapaSquare(int x, int y, int tamanho, double deslocamento) {
+void Terreno::etapaSquare(int tamanho, double deslocamento) {
   int metade = tamanho/2;
-  for (y = 0; y < linhasY; y += metade) {
-        for (x = (y + metade) % tamanho; x < colunasX; x += tamanho) {
+  for (int y = 0; y < linhasY; y += metade) {
+        for (int x = (y + metade) % tamanho; x < colunasX; x += tamanho) {
             double soma = 0.0;
             int cont = 0;
 
@@ -118,11 +119,10 @@ bool Terreno::salvarMapaAltitudes(const std::string& nomeArquivo) {
     if (!arquivo.is_open()) {
         return false;
     }
-
-    arquivo << linhasY << " " << colunasX << "\n";
+    arquivo << linhasY << " " << colunasX;
     for (int l = 0; l < linhasY; ++l) {
         for (int c = 0; c < colunasX; ++c) {
-            arquivo << mapaAltitudes[l][c] << " ";
+            arquivo << mapaAltitudes[l][c];
             if (c < colunasX - 1) {
                 arquivo << " ";
             }

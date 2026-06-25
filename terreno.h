@@ -2,8 +2,6 @@
 #define terreno_h 
 #include <vector>
 #include <string>
-#include <algorithm>
-#include <cstdlib>
 
 
 class Terreno {
@@ -11,8 +9,8 @@ class Terreno {
     std::vector<std::vector<double>> mapaAltitudes;
     int linhasY;
     int colunasX;
-    void etapaDiamond(int x, int y, int tamanho, double deslocamento);
-    void etapaSquare(int x, int y, int tamanho, double deslocamento);
+    void etapaDiamond(int tamanho, double deslocamento);
+    void etapaSquare(int tamanho, double deslocamento);
     
   public:
     Terreno();
