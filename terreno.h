@@ -18,8 +18,8 @@ class Terreno {
     void gerarMapaAltitudes(int n, double rugosidade);
     double obterAltitude(int linha, int coluna);
     const std::vector<std::vector<double>>& obterAltitudes();
-    int getLinhasY();
-    int getColunasX();
+    int obterLinhasY();
+    int obterColunasX();
     void salvarMapaAltitudes(const std::string& nomeArquivo);
     bool lerMapaAltitudes(const std::string& nomeArquivo);
     bool definirAltitudes(const std::vector<std::vector<double>>& altitudes);
