@@ -22,6 +22,7 @@ class Terreno {
     int obterColunasX();
     bool salvarMapaAltitudes(const std::string& nomeArquivo);
     bool lerMapaAltitudes(const std::string& nomeArquivo);
+    void definirAltitude(int linha, int coluna, double valor);
 };
 
-#endif //terreno_h
+#endif

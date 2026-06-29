@@ -16,7 +16,7 @@ Terreno::Terreno(int n) {
     linhasY = tamanho;
     colunasX = tamanho;
     mapaAltitudes.assign(tamanho, std::vector<double>(tamanho, 0.0));
-};
+}
 
 Terreno::~Terreno(){}
 
@@ -35,23 +35,57 @@ double Terreno::obterAltitude(int linha, int coluna) {
     return mapaAltitudes[linha][coluna];
 }
 
+void Terreno::definirAltitude(int linha, int coluna, double valor) {
+    if (linha >= 0 && linha < linhasY && coluna >= 0 && coluna < colunasX) {
+        mapaAltitudes[linha][coluna] = valor;
+    }
+}
+
 const std::vector<std::vector<double>>& Terreno::obterAltitudes() {
     return mapaAltitudes;
 }
 
 void Terreno::gerarMapaAltitudes(int n, double rugosidade) {
     int tamanho = pow(2, n) + 1;
-    linhasY = tamanho;
-    colunasX = tamanho;
-    mapaAltitudes.assign(tamanho, std::vector<double>(tamanho, 0.0));
+    
+    bool cantosInicializados = false;
+    if (linhasY == tamanho && colunasX == tamanho) {
+        if (mapaAltitudes[0][0] != 0.0 || mapaAltitudes[0][tamanho - 1] != 0.0 ||
+            mapaAltitudes[tamanho - 1][0] != 0.0 || mapaAltitudes[tamanho - 1][tamanho - 1] != 0.0) {
+            cantosInicializados = true;
+        }
+    }
 
-    mapaAltitudes[0][0] = (rand() % 1001) / 10.0;
-    mapaAltitudes[0][tamanho - 1] = (rand() % 1001) / 10.0;
-    mapaAltitudes[tamanho - 1][0] = (rand() % 1001) / 10.0;
-    mapaAltitudes[tamanho - 1][tamanho - 1] = (rand() % 1001) / 10.0;
+    if (!cantosInicializados) {
+        linhasY = tamanho;
+        colunasX = tamanho;
+        mapaAltitudes.assign(tamanho, std::vector<double>(tamanho, 0.0));
+
+        mapaAltitudes[0][0] = (rand() % 1001) / 10.0;
+        mapaAltitudes[0][tamanho - 1] = (rand() % 1001) / 10.0;
+        mapaAltitudes[tamanho - 1][0] = (rand() % 1001) / 10.0;
+        mapaAltitudes[tamanho - 1][tamanho - 1] = (rand() % 1001) / 10.0;
+        
+    } else {
+        double infEsq = mapaAltitudes[0][0];
+        double supEsq = mapaAltitudes[0][tamanho - 1];
+        double infDir = mapaAltitudes[tamanho - 1][0];
+        double supDir = mapaAltitudes[tamanho - 1][tamanho - 1];
+
+        mapaAltitudes.assign(tamanho, std::vector<double>(tamanho, 0.0));
+
+        mapaAltitudes[0][0] = infEsq;
+        mapaAltitudes[0][tamanho - 1] = supEsq;
+        mapaAltitudes[tamanho - 1][0] = infDir;
+        mapaAltitudes[tamanho - 1][tamanho - 1] = supDir;
+    }
 
     int passo = tamanho - 1;
     double deslocamento = 50.0;
+
+    if (rugosidade == 0.0) {
+        deslocamento = 0.0;
+    }
 
     while (passo > 1) {
       etapaDiamond(passo, deslocamento);
@@ -74,16 +108,18 @@ void Terreno::etapaDiamond(int tamanho, double deslocamento) {
             double infDir = mapaAltitudes[y + tamanho][x + tamanho];
             double media = (supEsq + supDir + infEsq + infDir) / 4.0;
 
-            double aleatorio = ((rand() % 1000) / 1000.0) * deslocamento * 2 - deslocamento;
+            double aleatorio = 0.0;
+            if (deslocamento > 0.0) {
+                aleatorio = ((rand() % 1000) / 1000.0) * deslocamento * 2 - deslocamento;
+            }
             mapaAltitudes[meioY][meioX] = media + aleatorio;
-
             mapaAltitudes[meioY][meioX] = std::max(0.0, std::min(100.0, mapaAltitudes[meioY][meioX]));
         }
     }
 }
 
 void Terreno::etapaSquare(int tamanho, double deslocamento) {
-  int metade = tamanho/2;
+  int metade = tamanho / 2;
   for (int y = 0; y < linhasY; y += metade) {
         for (int x = (y + metade) % tamanho; x < colunasX; x += tamanho) {
             double soma = 0.0;
@@ -107,7 +143,10 @@ void Terreno::etapaSquare(int tamanho, double deslocamento) {
             }
 
             double media = soma / cont;
-            double aleatorio = ((rand() % 1000) / 1000.0) * deslocamento * 2 - deslocamento;
+            double aleatorio = 0.0;
+            if (deslocamento > 0.0) {
+                aleatorio = ((rand() % 1000) / 1000.0) * deslocamento * 2 - deslocamento;
+            }
             mapaAltitudes[y][x] = media + aleatorio;
             mapaAltitudes[y][x] = std::max(0.0, std::min(100.0, mapaAltitudes[y][x]));
         }
