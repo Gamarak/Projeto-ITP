@@ -2,6 +2,8 @@
 #define terreno_h 
 #include <vector>
 #include <string>
+#include "imagem.h"
+#include "paleta.h"
 
 class Terreno {
   private:
@@ -23,6 +25,7 @@ class Terreno {
     bool salvarMapaAltitudes(const std::string& nomeArquivo);
     bool lerMapaAltitudes(const std::string& nomeArquivo);
     void definirAltitude(int linha, int coluna, double valor);
+    Imagem gerarImagem(Paleta& paleta);
 };
 
 #endif

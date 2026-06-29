@@ -10,9 +10,9 @@ struct Cor {
   Cor() : r(0), g(0), b(0){}
 
   Cor(int vermelho, int verde, int azul){
-  r = max(0, min(255, vermelho));
-  g = max(0, min(255, verde));
-  b = max(0, min(255, azul));
+  r = std::max(0, std::min(255, vermelho));
+  g = std::max(0, std::min(255, verde));
+  b = std::max(0, std::min(255, azul));
   }
 };
 

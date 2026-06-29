@@ -3,11 +3,11 @@
 #include <fstream>
 using namespace std;
 
-int Paleta::hexParaRgb(const string& hexString) {
+int Paleta::hexParaRgb(const std::string& hexString) {
   int resultado = 0;
   for (char c : hexString) {
     int valorCaractere = 0;
-     c = toupper(c); 
+     c = std::toupper(c); 
     if (c >= '0' && c <= '9') {
          valorCaractere = c - '0';
      } else if (c >= 'A' && c <= 'F') {
@@ -21,15 +21,15 @@ return resultado;
 }
 
 Paleta::Paleta(){}
-Paleta::Paleta(string nomeArquivo) {
-  ifstream arquivo(nomeArquivo);
+Paleta::Paleta(std::string nomeArquivo) {
+  std::ifstream arquivo(nomeArquivo);
   if (!arquivo.is_open()){
-    cout << "Erro ao abrir o arquivo" << endl;
+    std::cout << "Erro ao abrir o arquivo" << std::endl;
     return;
   }
-  string linha;
+  std::string linha;
 
-  while (getline(arquivo, linha)) {
+  while (std::getline(arquivo, linha)) {
     if (!linha.empty() && linha[0] == '#' && linha.size() >= 7) {
     int r = hexParaRgb(linha.substr(1, 2));
     int g = hexParaRgb(linha.substr(3, 2));

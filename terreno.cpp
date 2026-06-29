@@ -1,4 +1,6 @@
 #include "terreno.h"
+#include "imagem.h"
+#include "paleta.h"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -195,4 +197,31 @@ bool Terreno::lerMapaAltitudes(const std::string& nomeArquivo) {
     }
     arquivo.close();
     return true;
+}
+
+Imagem Terreno::gerarImagem(Paleta& paleta) {
+    Imagem img(colunasX, linhasY);
+    int numCores = paleta.obterTamanho();
+
+    for (int y = 0; y < linhasY; y++) {
+        for (int x = 0; x < colunasX; x++) {
+          double alturaAtual = mapaAltitudes[y][x];
+          int indiceCor = (alturaAtual / 100.0) * numCores;
+
+          if (indiceCor >= numCores) {
+              indiceCor = numCores - 1;
+          }
+        Cor corPixel = paleta.obterCor(indiceCor);
+        if ( y > 0 && x > 0) {
+          double alturaNoroeste = mapaAltitudes[y - 1][x - 1];
+          if (alturaAtual < alturaNoroeste) {
+            corPixel.r = corPixel.r * 0.5;
+            corPixel.g = corPixel.g * 0.5;
+            corPixel.b = corPixel.b * 0.5;
+          }
+        }
+        img(x, y) = corPixel;
+    }
+  }
+  return img;
 }

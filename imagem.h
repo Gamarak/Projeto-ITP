@@ -19,8 +19,8 @@ class Imagem {
     int obterAltura() const;
     Pixel& operator()(int coluna, int linha);
     const Pixel& operator()(int coluna, int linha) const;
-    bool lerPPM(string nomeArquivo);
-    bool salvarPPM(string nomeArquivo);
+    bool lerPPM(std::string nomeArquivo);
+    bool salvarPPM(std::string nomeArquivo);
     
 };
 
