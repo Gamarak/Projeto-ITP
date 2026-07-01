@@ -8,8 +8,8 @@
 class Terreno {
   private:
     std::vector<std::vector<double>> mapaAltitudes;
-    int linhasY;
-    int colunasX;
+    int totalLinhas;
+    int totalColunas;
     void etapaDiamond(int tamanho, double deslocamento);
     void etapaSquare(int tamanho, double deslocamento);
     

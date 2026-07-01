@@ -9,36 +9,36 @@
 #include <ctime>
 
 Terreno::Terreno() {
-    linhasY = 0;
-    colunasX = 0;
+    totalLinhas = 0;
+    totalColunas = 0;
 }
 
 Terreno::Terreno(int n) {
     int tamanho = pow(2, n) + 1;
-    linhasY = tamanho;
-    colunasX = tamanho;
+    totalLinhas = tamanho;
+    totalColunas = tamanho;
     mapaAltitudes.assign(tamanho, std::vector<double>(tamanho, 0.0));
 }
 
 Terreno::~Terreno(){}
 
 int Terreno::obterLinhasY() {
-    return linhasY;
+    return totalLinhas;
 }
 
 int Terreno::obterColunasX() {
-    return colunasX;
+    return totalColunas;
 }
 
 double Terreno::obterAltitude(int linha, int coluna) {
-    if (linha < 0 || linha >= linhasY || coluna < 0 || coluna >= colunasX) {
+    if (linha < 0 || linha >= totalLinhas || coluna < 0 || coluna >= totalColunas) {
       return 0.0;
     }
     return mapaAltitudes[linha][coluna];
 }
 
 void Terreno::definirAltitude(int linha, int coluna, double valor) {
-    if (linha >= 0 && linha < linhasY && coluna >= 0 && coluna < colunasX) {
+    if (linha >= 0 && linha < totalLinhas && coluna >= 0 && coluna < totalColunas) {
         mapaAltitudes[linha][coluna] = valor;
     }
 }
@@ -51,7 +51,7 @@ void Terreno::gerarMapaAltitudes(int n, double rugosidade) {
     int tamanho = pow(2, n) + 1;
     
     bool cantosInicializados = false;
-    if (linhasY == tamanho && colunasX == tamanho) {
+    if (totalLinhas == tamanho && totalColunas == tamanho) {
         if (mapaAltitudes[0][0] != 0.0 || mapaAltitudes[0][tamanho - 1] != 0.0 ||
             mapaAltitudes[tamanho - 1][0] != 0.0 || mapaAltitudes[tamanho - 1][tamanho - 1] != 0.0) {
             cantosInicializados = true;
@@ -59,8 +59,8 @@ void Terreno::gerarMapaAltitudes(int n, double rugosidade) {
     }
 
     if (!cantosInicializados) {
-        linhasY = tamanho;
-        colunasX = tamanho;
+        totalLinhas = tamanho;
+        totalColunas = tamanho;
         mapaAltitudes.assign(tamanho, std::vector<double>(tamanho, 0.0));
 
         mapaAltitudes[0][0] = (rand() % 1001) / 10.0;
@@ -99,8 +99,8 @@ void Terreno::gerarMapaAltitudes(int n, double rugosidade) {
 }
 
 void Terreno::etapaDiamond(int tamanho, double deslocamento) {
-   for (int y = 0; y < linhasY - 1; y += tamanho) {
-        for (int x = 0; x < colunasX - 1; x += tamanho) {
+   for (int y = 0; y < totalLinhas - 1; y += tamanho) {
+        for (int x = 0; x < totalColunas - 1; x += tamanho) {
             int meioX = x + tamanho / 2;
             int meioY = y + tamanho / 2;
 
@@ -122,8 +122,8 @@ void Terreno::etapaDiamond(int tamanho, double deslocamento) {
 
 void Terreno::etapaSquare(int tamanho, double deslocamento) {
   int metade = tamanho / 2;
-  for (int y = 0; y < linhasY; y += metade) {
-        for (int x = (y + metade) % tamanho; x < colunasX; x += tamanho) {
+  for (int y = 0; y < totalLinhas; y += metade) {
+        for (int x = (y + metade) % tamanho; x < totalColunas; x += tamanho) {
             double soma = 0.0;
             int cont = 0;
 
@@ -131,7 +131,7 @@ void Terreno::etapaSquare(int tamanho, double deslocamento) {
                 soma += mapaAltitudes[y - metade][x];
                 cont++;
             }
-            if (y + metade < linhasY) {
+            if (y + metade < totalLinhas) {
                 soma += mapaAltitudes[y + metade][x];
                 cont++;
             }
@@ -139,7 +139,7 @@ void Terreno::etapaSquare(int tamanho, double deslocamento) {
                 soma += mapaAltitudes[y][x - metade];
                 cont++;
             }
-            if (x + metade < colunasX) {
+            if (x + metade < totalColunas) {
                 soma += mapaAltitudes[y][x + metade];
                 cont++;
             }
@@ -160,11 +160,11 @@ bool Terreno::salvarMapaAltitudes(const std::string& nomeArquivo) {
     if (!arquivo.is_open()) {
         return false;
     }
-    arquivo << linhasY << " " << colunasX << std::endl;
-    for (int l = 0; l < linhasY; ++l) {
-        for (int c = 0; c < colunasX; ++c) {
+    arquivo << totalLinhas << " " << totalColunas << std::endl;
+    for (int l = 0; l < totalLinhas; ++l) {
+        for (int c = 0; c < totalColunas; ++c) {
             arquivo << mapaAltitudes[l][c];
-            if (c < colunasX - 1) {
+            if (c < totalColunas - 1) {
                 arquivo << " ";
             }
         }
@@ -184,11 +184,11 @@ bool Terreno::lerMapaAltitudes(const std::string& nomeArquivo) {
         arquivo.close();
         return false;
     }
-    colunasX = novasColunasX;
-    linhasY = novasLinhasY;
-    mapaAltitudes.assign(linhasY, std::vector<double>(colunasX, 0.0));
-    for (int l = 0; l < linhasY; l++) {
-        for (int c = 0; c < colunasX; c++) {
+    totalColunas = novasColunasX;
+    totalLinhas = novasLinhasY;
+    mapaAltitudes.assign(totalLinhas, std::vector<double>(totalColunas, 0.0));
+    for (int l = 0; l < totalLinhas; l++) {
+        for (int c = 0; c < totalColunas; c++) {
             if (!(arquivo >> mapaAltitudes[l][c])) {
                 arquivo.close();
                 return false;
@@ -200,11 +200,11 @@ bool Terreno::lerMapaAltitudes(const std::string& nomeArquivo) {
 }
 
 Imagem Terreno::gerarImagem(Paleta& paleta) {
-    Imagem img(colunasX, linhasY);
+    Imagem img(totalColunas, totalLinhas);
     int numCores = paleta.obterTamanho();
 
-    for (int y = 0; y < linhasY; y++) {
-        for (int x = 0; x < colunasX; x++) {
+    for (int y = 0; y < totalLinhas; y++) {
+        for (int x = 0; x < totalColunas; x++) {
           double alturaAtual = mapaAltitudes[y][x];
           int indiceCor = (alturaAtual / 100.0) * numCores;
 
